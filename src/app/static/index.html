@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Resume Intelligence Platform — Explainable Resume Verification and Job Description Matching Dashboard for Recruiters">
+    <title>Resume Intelligence Platform</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+
+    <!-- ============ HEADER ============ -->
+    <header class="header" id="app-header">
+        <div class="container">
+            <h1>Resume Intelligence Platform</h1>
+            <p class="subtitle">Explainable Resume Verification &amp; Job Matching</p>
+        </div>
+    </header>
+
+    <main class="container">
+
+        <!-- ============ ERROR BANNER ============ -->
+        <div class="error-banner" id="error-banner">
+            <div class="error-title" id="error-title">Error</div>
+            <div id="error-message"></div>
+            <ul class="file-errors-list" id="file-errors-list" style="display:none"></ul>
+        </div>
+
+        <!-- ============ SECTION 1 & 2: INPUT ============ -->
+        <section class="input-section" id="input-section">
+            <div class="input-grid">
+                <!-- Job Description -->
+                <div class="glass-panel">
+                    <div class="section-title">
+                        <span class="icon">📋</span> Job Description
+                    </div>
+                    <div class="input-group">
+                        <label for="jd-textarea">Paste Job Description</label>
+                        <textarea
+                            id="jd-textarea"
+                            class="jd-textarea"
+                            placeholder="Paste the full job description here...&#10;&#10;Include sections like:&#10;• Required Skills&#10;• Experience&#10;• Education&#10;• Certifications"
+                        ></textarea>
+                    </div>
+                    <div class="input-group" style="margin-top: var(--space-md);">
+                        <label for="jd-file-input">Or Upload JD File (.txt)</label>
+                        <div class="upload-zone" id="jd-upload-zone" style="min-height: 60px; padding: var(--space-md);">
+                            <p style="font-size: 0.82rem;">📄 Click or drop a JD text file</p>
+                            <input type="file" id="jd-file-input" accept=".txt,.text,.md">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Resume Upload -->
+                <div class="glass-panel">
+                    <div class="section-title">
+                        <span class="icon">📄</span> Candidate Resumes
+                    </div>
+                    <div class="input-group">
+                        <label>Upload Resume Files (.txt)</label>
+                        <div class="upload-zone" id="resume-upload-zone">
+                            <span class="upload-icon">📂</span>
+                            <p>Drop resume files here or click to browse</p>
+                            <p style="font-size: 0.75rem; color: var(--text-muted);">Supports .txt files • Multiple files allowed</p>
+                            <input type="file" id="resume-file-input" accept=".txt,.text,.md" multiple>
+                        </div>
+                    </div>
+                    <div class="file-list" id="resume-file-list"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============ ANALYZE BUTTON ============ -->
+        <div class="analyze-section">
+            <button class="btn-analyze" id="btn-analyze" type="button">
+                <span class="spinner"></span>
+                <span class="btn-text">🔍 Analyze Candidates</span>
+            </button>
+        </div>
+
+        <!-- ============ SECTION 3: ANALYSIS SUMMARY ============ -->
+        <section class="summary-section" id="summary-section">
+            <div class="section-title"><span class="icon">📊</span> Analysis Summary</div>
+            <div class="summary-grid">
+                <div class="summary-card">
+                    <div class="card-value" id="summary-total">0</div>
+                    <div class="card-label">Total Candidates</div>
+                </div>
+                <div class="summary-card">
+                    <div class="card-value" id="summary-avg">0%</div>
+                    <div class="card-label">Average Match Score</div>
+                </div>
+                <div class="summary-card">
+                    <div class="card-value" id="summary-top" style="font-size: 1.2rem;">—</div>
+                    <div class="card-label">Top Candidate</div>
+                </div>
+                <div class="summary-card">
+                    <div class="card-value" id="summary-review">0</div>
+                    <div class="card-label">Requiring Review</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============ SECTION 4: CANDIDATE RANKING ============ -->
+        <section class="ranking-section" id="ranking-section">
+            <div class="section-title"><span class="icon">🏆</span> Candidate Ranking</div>
+            <div class="glass-panel" style="padding: 0; overflow: hidden;">
+                <div class="ranking-table-wrap">
+                    <table class="ranking-table" id="ranking-table">
+                        <thead>
+                            <tr>
+                                <th>Rank</th>
+                                <th>Candidate</th>
+                                <th>Qualification Match</th>
+                                <th>AI-style Signal</th>
+                                <th>AI Signal Category</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ranking-tbody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============ SECTION 5 & 6: CANDIDATE DETAIL ============ -->
+        <section class="detail-section" id="detail-section">
+            <div class="detail-header">
+                <h2 id="detail-name">—</h2>
+                <div class="overall-score" id="detail-overall-score">—</div>
+            </div>
+
+            <div class="detail-columns">
+                <!-- Left: Qualification Match Breakdown -->
+                <div>
+                    <div class="section-title" style="font-size: 1rem;"><span class="icon">✅</span> Qualification Match</div>
+                    <div id="qualification-breakdown"></div>
+                </div>
+
+                <!-- Right: AI-style Verification -->
+                <div>
+                    <div class="ai-panel" id="ai-panel">
+                        <div class="ai-panel-header">
+                            <h3><span class="icon">🔬</span> AI-Style Verification</h3>
+                            <div class="ai-overall-score" id="ai-overall-score">—</div>
+                        </div>
+                        <div class="ai-meta-row">
+                            <div class="ai-meta-item">
+                                <span class="ai-meta-label">Category</span>
+                                <span class="ai-meta-value" id="ai-category">—</span>
+                            </div>
+                            <div class="ai-meta-item">
+                                <span class="ai-meta-label">Confidence</span>
+                                <span class="ai-meta-value" id="ai-confidence">—</span>
+                            </div>
+                        </div>
+                        <div id="ai-signals-container"></div>
+                        <div class="disclaimer" id="ai-disclaimer"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ============ LOADING OVERLAY ============ -->
+    <div class="loading-overlay" id="loading-overlay">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">Analyzing candidates…</div>
+    </div>
+
+    <!-- ============ FOOTER ============ -->
+    <footer class="footer">
+        Resume Intelligence Platform &bull; Zero-Dependency &bull; Local Processing Only &bull; No Data Leaves Your Machine
+    </footer>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>
