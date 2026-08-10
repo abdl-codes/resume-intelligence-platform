@@ -118,3 +118,6 @@ The AI detector uses stylometrics to find robotic text formatting:
 ## Known Limitations
 - Text parsing is rule-based and optimized for `.txt` resumes. PDF or Word documents must be converted to plain text before ingestion.
 - Multi-word skill extraction uses word-splitting heuristics and fallback token check procedures.
+
+Demo video
+https://drive.google.com/file/d/1ua3vTPCuvKNraKre9pr_Nzq0lgjZ6HIZ/view?usp=drivesdk
